@@ -1,0 +1,195 @@
+/*!
+ * Motion Polish v1.0.0 (stylesheet)
+ * Works together with motion-polish.js. Load this before the script.
+ *
+ * Design notes:
+ *  - Every rule is scoped to html.mp-ready, so nothing applies until the engine has
+ *    announced itself. If the script never runs, the page looks exactly as before.
+ *  - Our transition and hidden-state declarations use !important so a site's own
+ *    "transition: box-shadow .2s" cannot turn an entrance into a snap. Once an element
+ *    reaches data-mp-state="done" we release every declaration, so the site's own
+ *    hover transforms, transitions and opacity rules take over again.
+ *  - Only opacity, transform, filter and clip-path are animated. Layout never moves.
+ */
+
+:root {
+  --mp-duration: 750ms;
+  --mp-exit-duration: 350ms;
+  --mp-distance: 24px;
+  --mp-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --mp-ease-exit: cubic-bezier(0.4, 0, 1, 1);
+  --mp-blur: 6px;
+  --mp-scale: 0.97;
+  --mp-page-fade: 350ms;
+  --mp-hover: 220ms;
+  --mp-safety: 2500ms;
+}
+
+/* 1. Hold the page until the first screen is staged. The safety animation guarantees
+      the page appears even if the script fails after this stylesheet has loaded. */
+html.mp-ready body {
+  transition: opacity var(--mp-page-fade) ease-out;
+}
+html.mp-ready:not(.mp-loaded) body {
+  opacity: 0;
+  animation: mp-safety 1ms linear var(--mp-safety) forwards;
+}
+@keyframes mp-safety {
+  to { opacity: 1; }
+}
+
+/* Sideways effects must never create a horizontal scrollbar. overflow: clip does not
+   turn the root into a scroll container, so position: sticky keeps working. */
+html.mp-clip-x {
+  overflow-x: clip;
+}
+
+/* 2. Animated units. While an element has not reached "done", we own its transitions. */
+html.mp-ready [data-mp]:not([data-mp-state="done"]) {
+  transition-property: opacity, transform, filter, clip-path !important;
+  transition-duration: var(--mp-duration) !important;
+  transition-timing-function: var(--mp-ease) !important;
+  transition-delay: var(--mp-delay, 0ms) !important;
+}
+/* Promote to a compositor layer only while actually moving; hundreds of permanent
+   layers would cost memory on phones for no visible gain. */
+html.mp-ready [data-mp][data-mp-state="in"],
+html.mp-ready [data-mp][data-mp-state="out"] {
+  will-change: opacity, transform;
+}
+html.mp-ready [data-mp="fade"][data-mp-state="in"],
+html.mp-ready [data-mp="blur"][data-mp-state="in"] {
+  will-change: opacity;
+}
+
+/* Hidden (not yet entered). */
+html.mp-ready [data-mp]:not([data-mp-state]) {
+  opacity: 0 !important;
+}
+html.mp-ready [data-mp="fade-up"]:not([data-mp-state]) {
+  transform: translate3d(0, var(--mp-distance), 0) !important;
+}
+html.mp-ready [data-mp="fade-down"]:not([data-mp-state]) {
+  transform: translate3d(0, calc(var(--mp-distance) * -1), 0) !important;
+}
+html.mp-ready [data-mp="fade-left"]:not([data-mp-state]) {
+  transform: translate3d(calc(var(--mp-distance) * -1), 0, 0) !important;
+}
+html.mp-ready [data-mp="fade-right"]:not([data-mp-state]) {
+  transform: translate3d(var(--mp-distance), 0, 0) !important;
+}
+html.mp-ready [data-mp="scale"]:not([data-mp-state]) {
+  transform: scale(var(--mp-scale)) !important;
+}
+html.mp-ready [data-mp="scale-up"]:not([data-mp-state]) {
+  transform: translate3d(0, var(--mp-distance), 0) scale(var(--mp-scale)) !important;
+}
+html.mp-ready [data-mp="blur"]:not([data-mp-state]) {
+  filter: blur(var(--mp-blur)) !important;
+}
+html.mp-ready [data-mp="blur-up"]:not([data-mp-state]) {
+  transform: translate3d(0, calc(var(--mp-distance) * 0.6), 0) !important;
+  filter: blur(var(--mp-blur)) !important;
+}
+html.mp-ready [data-mp="reveal-up"]:not([data-mp-state]) {
+  opacity: 1 !important;
+  clip-path: inset(100% 0 0 0) !important;
+  transform: scale(1.04) !important;
+}
+html.mp-ready [data-mp="reveal-down"]:not([data-mp-state]) {
+  opacity: 1 !important;
+  clip-path: inset(0 0 100% 0) !important;
+  transform: scale(1.04) !important;
+}
+html.mp-ready [data-mp="reveal-left"]:not([data-mp-state]) {
+  opacity: 1 !important;
+  clip-path: inset(0 100% 0 0) !important;
+  transform: scale(1.04) !important;
+}
+html.mp-ready [data-mp="reveal-right"]:not([data-mp-state]) {
+  opacity: 1 !important;
+  clip-path: inset(0 0 0 100%) !important;
+  transform: scale(1.04) !important;
+}
+html.mp-ready [data-mp="grow-x"]:not([data-mp-state]) {
+  transform: scaleX(0) !important;
+  transform-origin: left center;
+}
+html.mp-ready [data-mp="grow-x"] {
+  transform-origin: left center;
+}
+
+/* Entering. --mp-opacity lets elements the site renders at partial opacity land there,
+   not at 1, so there is no pop when we hand control back. */
+html.mp-ready [data-mp][data-mp-state="in"] {
+  opacity: var(--mp-opacity, 1) !important;
+  transform: none !important;
+}
+html.mp-ready [data-mp^="blur"][data-mp-state="in"] {
+  filter: none !important;
+}
+html.mp-ready [data-mp^="reveal"][data-mp-state="in"] {
+  clip-path: inset(0 0 0 0) !important;
+}
+
+/* Leaving through the bottom edge (user scrolled back up). Lighter and quicker than
+   the entrance, and never blurred or clipped, so it reads as a soft dismissal. */
+html.mp-ready [data-mp][data-mp-state="out"] {
+  opacity: 0 !important;
+  transition-duration: var(--mp-exit-duration) !important;
+  transition-timing-function: var(--mp-ease-exit) !important;
+  transition-delay: 0ms !important;
+}
+html.mp-ready [data-mp][data-mp-state="out"][data-mp-dir="down"] {
+  transform: translate3d(0, calc(var(--mp-distance) * 0.5), 0) !important;
+}
+html.mp-ready [data-mp][data-mp-state="out"][data-mp-dir="up"] {
+  transform: translate3d(0, calc(var(--mp-distance) * -0.5), 0) !important;
+}
+html.mp-ready [data-mp^="reveal"][data-mp-state="out"] {
+  clip-path: inset(0 0 0 0) !important;
+}
+
+/* 3. Hover and focus smoothing. Zero specificity on purpose: any transition the site
+      already declares wins, so this only fills gaps rather than overriding intent. */
+:where(html.mp-ready.mp-hover) :where(a, button, [role="button"], input[type="submit"], input[type="button"], label, summary, .btn, .button, [class*="card"], [class*="btn"]) {
+  transition-property: color, background-color, border-color, box-shadow, opacity, transform, filter, text-decoration-color, outline-color, fill, stroke;
+  transition-duration: var(--mp-hover);
+  transition-timing-function: cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+/* 4. Accessibility and print: no motion, nothing hidden, ever. */
+@media (prefers-reduced-motion: reduce) and (min-width: 99999px) {
+  html.mp-ready [data-mp]:not([data-mp-state]),
+  html.mp-ready [data-mp][data-mp-state],
+  html.mp-ready [data-mp][data-mp-state][data-mp-dir] {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+    clip-path: none !important;
+    transition: none !important;
+    will-change: auto !important;
+  }
+  html.mp-ready body,
+  html.mp-ready:not(.mp-loaded) body {
+    opacity: 1 !important;
+    animation: none !important;
+    transition: none !important;
+  }
+}
+@media print {
+  html.mp-ready [data-mp]:not([data-mp-state]),
+  html.mp-ready [data-mp][data-mp-state],
+  html.mp-ready [data-mp][data-mp-state][data-mp-dir] {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+    clip-path: none !important;
+    transition: none !important;
+  }
+  html.mp-ready body,
+  html.mp-ready:not(.mp-loaded) body {
+    opacity: 1 !important;
+    animation: none !important;
+  }
+}
