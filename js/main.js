@@ -11,7 +11,7 @@
    02a preloader
    02  hero reveal (opening sequence)
    02b nav mark fold
-   02c headline swap
+   02c headline cycle
    02e hero media slides
    02f statement split
    03 mobile menu
@@ -23,6 +23,7 @@
    08b footer wordmark (scroll-linked climb)
    08c about video band
    09 smooth scrolling for in-page links
+   09b page curtain (moving between index.html and ui-ux.html)
    10 small things (year, broken images, menu close on resize)
    ========================================================================== */
 
@@ -356,33 +357,40 @@
   })();
 
 
-  /* 02c HEADLINE SWAP
-     Every 5.2 s the two halves of the headline trade places. Each line rolls
-     up and out while its replacement rolls in from below, 90 ms behind it;
-     the four lines are staggered 90 ms apart as well. The sentence is
-     labelled on the <h1> (aria-label) and the halves are aria-hidden, so
-     assistive tech reads one stable headline. Pauses while the hero is off
-     screen or the tab is hidden; off for reduced motion.
+  /* 02c HEADLINE CYCLE
+     The headline opens on its lead statement ("Multimedia specialist and
+     creative technologist") and holds it. Then each line rolls up and out
+     while the same line of the next phrase rolls in from below, 90 ms behind
+     it; the four lines are staggered 90 ms apart as well. The extra phrases
+     are listed on each line in the HTML (data-next, separated by a | bar), so
+     the copy is edited there, not here. After the last phrase it returns to
+     the lead statement, which holds longest. The <h1> carries the lead
+     statement as its aria-label and the halves are aria-hidden, so assistive
+     tech reads one stable headline. Pauses while the hero is off screen or
+     the tab is hidden; off for reduced motion.
      ---------------------------------------------------------------------- */
-  (function headlineSwap() {
+  (function headlineCycle() {
     const title = $('#heroTitle');
     if (!title || !title.animate || prefersReduced()) return;
-    const left = $$('.hero__side--l .hero__line', title);
-    const right = $$('.hero__side--r .hero__line', title);
-    if (!left.length || left.length !== right.length) return;
+    const lines = $$('.hero__line', title);       /* reading order, same as the load animation */
+    if (!lines.length) return;
 
-    const lines = left.concat(right);               /* reading order, same as the load animation */
-    const INTERVAL = 5200, STAGGER = 90, OUT = 700, IN = 850;
+    /* phrases[i] is every text line i shows, the lead statement first */
+    const phrases = lines.map((line) => [line.firstElementChild.textContent].concat(
+      String(line.dataset.next || '').split('|').map((t) => t.trim()).filter(Boolean)));
+    const sets = Math.min.apply(null, phrases.map((p) => p.length));
+    if (sets < 2) return;
+
+    const HOLD_LEAD = 6500, HOLD = 4600, STAGGER = 90, OUT = 700, IN = 850;
     const EASE = 'cubic-bezier(.65,0,.2,1)';
-    let timer = 0, enabled = false, inView = true;
+    let at = 0, timer = 0, enabled = false, inView = true;
 
-    function swap() {
-      const half = left.length;
-      const next = lines.map((_, i) => lines[(i + half) % lines.length].firstElementChild.textContent);
+    function roll() {
+      at = (at + 1) % sets;
       lines.forEach((line, i) => {
-        const out = line.firstElementChild;
+        const out = line.lastElementChild;
         const inc = out.cloneNode(false);
-        inc.textContent = next[i];
+        inc.textContent = phrases[i][at];
         line.appendChild(inc);                      /* the line is a one-cell grid, so the two stack */
         const delay = i * STAGGER;
         const a = out.animate([{ transform: 'translateY(0)' }, { transform: 'translateY(-110%)' }],
@@ -394,9 +402,9 @@
       });
     }
 
-    const play = () => { if (enabled && inView && !document.hidden && !timer) timer = setTimeout(tick, INTERVAL); };
+    const play = () => { if (enabled && inView && !document.hidden && !timer) timer = setTimeout(tick, at === 0 ? HOLD_LEAD : HOLD); };
     const stop = () => { clearTimeout(timer); timer = 0; };
-    const tick = () => { timer = 0; swap(); play(); };
+    const tick = () => { timer = 0; roll(); play(); };
 
     document.addEventListener('visibilitychange', () => (document.hidden ? stop() : play()));
     if ('IntersectionObserver' in window) {
@@ -635,6 +643,7 @@
      tool list crossfade to match. Pictures are resolved up front (primary
      src, else data-fallback) so both layers can fade on the same frame; if a
      picture is slow, the tools still move at once and the picture follows.
+     A row may be a <button> or, when it leaves for another page, an <a>.
      ---------------------------------------------------------------------- */
   (function services() {
     const list = $('#servicesList');
@@ -658,6 +667,7 @@
     const cache = new Map();
     function resolveSrc(btn) {
       const key = btn.dataset.img;
+      if (!key) return Promise.resolve(null);       /* an embed-only row has no picture */
       if (!cache.has(key)) {
         cache.set(key, load(key).then((ok) => {
           if (ok) return key;
@@ -668,21 +678,38 @@
       return cache.get(key);
     }
 
-    function swapImage(src) {
-      frame.classList.toggle('is-missing', !src);
+    function swapImage(src, bare, slow) {
+      frame.classList.toggle('is-missing', !src && !bare);    /* bare: no picture on purpose, so no "missing" stripes */
       if (!src) { $$('img', frame).forEach((im) => im.classList.remove('is-on')); return; }
       if (front.getAttribute('src') === src) { front.classList.add('is-on'); return; }
       const back = document.createElement('img');
       back.alt = '';
       back.decoding = 'async';
       back.src = src;
+      const dur = slow ? SLOW : 0;                  /* 0 leaves the stylesheet's own timing */
+      back.style.transitionDuration = front.style.transitionDuration = dur ? dur + 'ms' : '';
       frame.appendChild(back);
       void back.offsetWidth;                        /* commit the hidden state so the fade runs */
       back.classList.add('is-on');
       front.classList.remove('is-on');
       const old = front;
       front = back;
-      setTimeout(() => { if (old !== front) old.remove(); }, FADE + 400);
+      setTimeout(() => { if (old !== front) old.remove(); }, (dur || FADE) + 400);
+    }
+
+    /* a row with data-img2 keeps trading its two pictures while it is the
+       active row: the first holds, fades slowly into the second, and back */
+    const SLOW = 1800, HOLD = 3600;
+    let alternating = 0;
+    function alternate(btn) {
+      clearInterval(alternating);
+      const pair = [btn.dataset.img, btn.dataset.img2];
+      if (!pair[0] || !pair[1] || prefersReduced()) return;
+      let i = 0;
+      alternating = setInterval(() => {
+        const next = pair[i ^ 1];
+        load(next).then((ok) => { if (ok && $('button, a', current) === btn) { i ^= 1; swapImage(next, false, true); } });
+      }, HOLD + SLOW);
     }
 
     function swapTools(spec) {
@@ -704,35 +731,44 @@
 
     /* a row with data-embed shows a live iframe (e.g. a Street View
        panorama) over its picture; built on first use and kept, so going
-       back to that row does not reload it */
+       back to that row does not reload it. Until the iframe has loaded, the
+       frame carries .is-loading and shows the loading animation instead. */
     const embeds = new Map();
+    const syncLoading = () => {
+      const el = embeds.get($('button, a', current).dataset.embed);
+      frame.classList.toggle('is-loading', !!el && !el.classList.contains('is-loaded'));
+    };
     function swapEmbed(btn) {
       const url = btn.dataset.embed;
       embeds.forEach((el, key) => el.classList.toggle('is-on', key === url));
-      if (!url || embeds.has(url)) return;
-      const el = document.createElement('iframe');
-      el.src = url;
-      el.title = btn.dataset.embedTitle || 'Embedded view';
-      el.loading = 'lazy';
-      el.allowFullscreen = true;
-      el.referrerPolicy = 'strict-origin-when-cross-origin';
-      frame.appendChild(el);
-      embeds.set(url, el);
-      void el.offsetWidth;                          /* commit the hidden state so the fade runs */
-      el.classList.add('is-on');
+      if (url && !embeds.has(url)) {
+        const el = document.createElement('iframe');
+        el.src = url;
+        el.title = btn.dataset.embedTitle || 'Embedded view';
+        el.allowFullscreen = true;
+        el.referrerPolicy = 'strict-origin-when-cross-origin';
+        /* the document arrives first, the panorama a moment later: give it a beat before the reveal */
+        el.addEventListener('load', () => setTimeout(() => { el.classList.add('is-loaded'); syncLoading(); }, 700), { once: true });
+        frame.appendChild(el);
+        embeds.set(url, el);
+        void el.offsetWidth;                        /* commit the hidden state so the fade runs */
+        el.classList.add('is-on');
+      }
+      syncLoading();
     }
 
     async function activate(li) {
       if (!li || li === current) return;
-      const prev = $('button', current);
+      const prev = $('button, a', current);
       if (prev) prev.removeAttribute('aria-current');
       current.classList.remove('is-active');        /* old row greys out ... */
       li.classList.add('is-active');                /* ... new row turns black */
       current = li;
-      const btn = $('button', li);
+      const btn = $('button, a', li);
       if (!btn) return;
       btn.setAttribute('aria-current', 'true');
       swapEmbed(btn);
+      const bare = !!btn.dataset.embed && !btn.dataset.img;
 
       const mine = ++token;
       /* give the picture up to 250 ms so picture and tools start on one frame */
@@ -740,7 +776,8 @@
       if (mine !== token) return;
       swapTools(btn.dataset.tools);
       if (src === undefined) { src = await resolveSrc(btn); if (mine !== token) return; }
-      swapImage(src);
+      swapImage(src, bare);
+      alternate(btn);
     }
 
     /* while a live embed is showing, hovering another row only takes over
@@ -748,10 +785,10 @@
        panorama does not swap it out; click and focus stay instant */
     const EMBED_DWELL = 700;
     let pending = 0;
-    const hasEmbed = () => { const b = $('button', current); return !!(b && b.dataset.embed); };
+    const hasEmbed = () => { const b = $('button, a', current); return !!(b && b.dataset.embed); };
 
     $$('li', list).forEach((li) => {
-      const btn = $('button', li);
+      const btn = $('button, a', li);
       if (!btn) return;
       btn.addEventListener('pointerenter', () => {
         clearTimeout(pending);
@@ -763,8 +800,10 @@
       btn.addEventListener('click', () => activate(li));
     });
 
+    alternate($('button, a', current));           /* the row that is active on load */
+
     /* warm every picture once the page is idle, so the first hover is instant */
-    const warm = () => $$('button', list).forEach((b) => resolveSrc(b));
+    const warm = () => $$('button, a', list).forEach((b) => resolveSrc(b));
     if ('requestIdleCallback' in window) requestIdleCallback(warm, { timeout: 3000 });
     else setTimeout(warm, 1500);
   })();
@@ -1153,6 +1192,63 @@
         setTimeout(() => glideTo(target, hash), 0);
       });
     });
+  })();
+
+
+  /* 09b PAGE CURTAIN
+     Moving between pages of this site (index.html and ui-ux.html). A link
+     marked data-curtain="Label" does not jump: a black panel rises over the
+     page with the label set in display type, and only then does the browser
+     leave. The page being opened starts with the same panel already down
+     (the <head> script reads the flag left in sessionStorage and sets
+     .from-curtain before first paint) and lifts it once its own opening
+     sequence is ready, so the two pages read as one move. Opening a link in
+     a new tab, reduced motion, or no sessionStorage all fall back to an
+     ordinary page load.
+     ---------------------------------------------------------------------- */
+  (function curtain() {
+    const el = $('#curtain');
+    if (!el) return;
+    const root = document.documentElement;
+    const label = $('span', el);
+    const RISE = 760, LIFT = 900;
+    const store = (key, value) => {
+      try { if (value == null) sessionStorage.removeItem(key); else sessionStorage.setItem(key, value); } catch (e) { /* private mode */ }
+    };
+    const reset = () => {
+      el.classList.remove('is-in', 'is-out');
+      root.classList.remove('from-curtain');
+      store('gs.curtain', null); store('gs.curtainLabel', null);
+    };
+
+    /* arriving: the panel is down; lift it once the page is ready underneath */
+    if (root.classList.contains('from-curtain')) {
+      store('gs.curtain', null); store('gs.curtainLabel', null);
+      Boot.ready.then(() => setTimeout(() => {
+        el.classList.add('is-out');
+        setTimeout(reset, LIFT);
+      }, 320));
+      setTimeout(reset, 6000);                      /* never leave a visitor behind the panel */
+    }
+
+    /* leaving */
+    $$('a[data-curtain]').forEach((a) => {
+      a.addEventListener('click', (e) => {
+        if (e.button || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || prefersReduced()) return;
+        e.preventDefault();
+        const href = a.href;
+        const text = a.dataset.curtain || '';
+        if (label) label.textContent = text;
+        store('gs.curtain', '1'); store('gs.curtainLabel', text);
+        Menu.close();
+        el.classList.add('is-in');
+        setTimeout(() => { window.location.href = href; }, RISE);
+      });
+    });
+
+    /* Back button: a page restored from the back-forward cache comes back
+       exactly as it was left, with the panel down. Clear it. */
+    window.addEventListener('pageshow', (e) => { if (e.persisted) reset(); });
   })();
 
 

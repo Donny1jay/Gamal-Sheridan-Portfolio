@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>UI and UX design, Gamal Sheridan</title>
+<meta name="description" content="UI and UX case studies by Gamal Sheridan: MediCompanion, a family app for care homes, and Galala Scholar, a research portal for Galala University.">
+<meta name="theme-color" content="#FFFFFF">
+<meta property="og:title" content="UI and UX design, Gamal Sheridan">
+<meta property="og:description" content="Two products taken from the first user flow to finished screens, in English and Arabic.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="files/work/uiux/galala-phones-1000.jpg">
+<link rel="icon" type="image/png" href="files/PFP-favicon.png">
+<link rel="apple-touch-icon" href="files/PFP-favicon.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,100..900;1,62..125,100..900&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="css/styles.css">
+<style>html.from-curtain{background:#000}</style>
+<script>
+/* Boot flags. Runs before first paint.
+   from-curtain : arrived from the portfolio through the black page curtain,
+                  so the curtain starts down and main.js lifts it
+   This page has no preloader. */
+(function () {
+  var d = document.documentElement;
+  d.classList.add('js');
+  try { if (sessionStorage.getItem('gs.curtain') === '1') d.classList.add('from-curtain'); } catch (e) {}
+  window.GS_PRELOAD = false;
+})();
+</script>
+<!-- motion-polish:start -->
+<script>document.documentElement.classList.add("mp-ready");window.MotionPolishConfig={"clipHorizontal":false,"personality":"quiet","smoothScroll":false,"manual":false};</script>
+<link rel="stylesheet" href="motion-polish/motion-polish.css">
+<script src="motion-polish/motion-polish.js" defer></script>
+<!-- motion-polish:end -->
+</head>
+
+<body>
+
+<!-- Page curtain: see index.html and main.js module 09b. -->
+<div class="curtain" id="curtain" aria-hidden="true"><p class="display curtain__label"><span></span></p></div>
+<script>try{var l=sessionStorage.getItem('gs.curtainLabel');if(l)document.querySelector('#curtain span').textContent=l}catch(e){}</script>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<!-- ============================================================
+     HEADER
+     Same pill nav as the portfolio. The brand and "Portfolio" go back to
+     index.html through the page curtain; the rest are sections of this page.
+     ============================================================ -->
+<header class="site-head" id="siteHead" data-mp-ignore>
+  <nav class="pill-nav" aria-label="Primary">
+    <a href="index.html" data-curtain="Gamal Sheridan" class="pill-nav__brand" aria-label="Gamal Sheridan, back to the portfolio">
+      <span class="pill-nav__mark mark-clip" id="navMark"><img src="files/logos/logo-final.svg" alt="" width="985" height="773"></span>
+      <span class="pill-nav__name" id="navName"><span>Gamal Sheridan</span></span>
+    </a>
+    <ul class="pill-nav__links">
+      <li><a href="index.html" data-curtain="Gamal Sheridan">Home</a></li>
+      <li><a href="#medicompanion">MediCompanion</a></li>
+      <li><a href="#galala">Galala Scholar</a></li>
+      <li><a href="#website">This portfolio</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <div class="site-head__right">
+    <a href="index.html#record" data-curtain="Gamal Sheridan" class="chip chip--win">
+      <span class="chip__dot" aria-hidden="true"></span>
+      <span class="chip__full">Latest win: Harvard HSIL global Top 20</span>
+      <span class="chip__short">Latest win</span>
+    </a>
+    <button class="burger" id="burger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+      <span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<!-- Mobile menu (full screen) -->
+<div class="menu" id="mobileMenu" hidden>
+  <nav aria-label="Mobile">
+    <a href="index.html" data-curtain="Gamal Sheridan">Home</a>
+    <a href="#medicompanion">MediCompanion</a>
+    <a href="#galala">Galala Scholar</a>
+    <a href="#website">This portfolio</a>
+    <a href="#contact">Contact</a>
+  </nav>
+  <div class="menu__foot">
+    <a class="menu__mail" href="mailto:gamal.1984.sheridan@gmail.com">gamal.1984.sheridan@gmail.com</a>
+    <div class="menu__cards">
+      <a class="linkcard linkcard--compact" href="https://www.behance.net/gamalsheridan" target="_blank" rel="noopener">
+        <span class="linkcard__thumb"><img src="files/thumbs/profile-behance.jpg" alt="" width="360" height="270" loading="lazy"></span>
+        <span class="linkcard__text"><span class="linkcard__title">Behance</span><span class="linkcard__url">behance.net/gamalsheridan</span></span>
+        <span class="arrow" aria-hidden="true"></span>
+      </a>
+      <a class="linkcard linkcard--compact" href="https://www.linkedin.com/in/gamal-sheridan" target="_blank" rel="noopener">
+        <span class="linkcard__thumb"><img src="files/thumbs/profile-linkedin.jpg" alt="" width="360" height="270" loading="lazy"></span>
+        <span class="linkcard__text"><span class="linkcard__title">LinkedIn</span><span class="linkcard__url">linkedin.com/in/gamal-sheridan</span></span>
+        <span class="arrow" aria-hidden="true"></span>
+      </a>
+    </div>
+  </div>
+</div>
+
+<main id="main">
+
+<!-- ============================================================
+     TITLE
+     Two-line title, an introduction, and an index of the case studies.
+     Add a project: add a row to .subhero__index and a matching
+     <section class="section study"> below.
+     ============================================================ -->
+<section class="subhero" id="top" aria-labelledby="pageTitle" data-mp-ignore>
+  <a class="subhero__back" href="index.html#services" data-curtain="Gamal Sheridan"><span class="arrow" aria-hidden="true"></span>Back to the portfolio</a>
+
+  <h1 class="display subhero__title" id="pageTitle" aria-label="UI and UX design">
+    <span class="hero__line" aria-hidden="true"><span>UI and UX</span></span>
+    <span class="hero__line" aria-hidden="true"><span>design</span></span>
+  </h1>
+
+  <div class="hero__intro subhero__intro">
+    <p class="hero__lead">Three projects, each taken from the first user flow to finished screens: a family app for care homes, a research portal for a university, and this portfolio itself.</p>
+    <ol class="subhero__index">
+      <li><a href="#medicompanion"><span class="n">01</span><span class="t">MediCompanion</span><span class="k">Family app, health-tech venture, 2026</span><span class="d">Case study<span class="arrow" aria-hidden="true"></span></span></a></li>
+      <li><a href="#galala"><span class="n">02</span><span class="t">Galala Scholar</span><span class="k">Research portal, freelance for Galala University, 2026</span><span class="d">Case study<span class="arrow" aria-hidden="true"></span></span></a></li>
+      <li><a href="#website"><span class="n">03</span><span class="t">This portfolio</span><span class="k">Web design and development, 2026</span><span class="d">Case study<span class="arrow" aria-hidden="true"></span></span></a></li>
+    </ol>
+  </div>
+</section>
+
+<!-- ============================================================
+     CASE STUDY 01: MEDICOMPANION
+     Pictures on the left, facts and design decisions on the right
+     (sticky on wide screens). The first picture is the supplied mockup;
+     the phone trio underneath is drawn in CSS around captures of the
+     working prototype.
+     ============================================================ -->
+<section class="section study" id="medicompanion" aria-labelledby="mcTitle">
+  <header class="section__head">
+    <div>
+      <p class="eyebrow">Case study 01</p>
+      <h2 class="h2" id="mcTitle">MediCompanion</h2>
+      <p class="section__sub">MediCompanion keeps families close to a relative in a care home. I led its interface from the first flow to the finished screens, in English and Arabic, as Creative and Design Lead of the team that reached the global Top 20 at Harvard HSIL.</p>
+    </div>
+  </header>
+
+  <div class="case">
+    <div class="case__boards">
+      <figure class="case__board">
+        <a class="case__shot case__shot--tall" href="files/work/uiux/medicompanion-phones-1400.jpg" target="_blank" rel="noopener">
+          <picture>
+            <source type="image/webp" srcset="files/work/uiux/medicompanion-phones-800.webp 800w, files/work/uiux/medicompanion-phones-1400.webp 1400w" sizes="(max-width: 960px) 100vw, 884px">
+            <img src="files/work/uiux/medicompanion-phones-800.jpg" srcset="files/work/uiux/medicompanion-phones-800.jpg 800w, files/work/uiux/medicompanion-phones-1400.jpg 1400w" sizes="(max-width: 960px) 100vw, 884px" width="1400" height="2100" alt="Two phones showing MediCompanion: a create account screen with a choice of role between owner, home viewer and family, and a device screen for pairing the MediCompanion Hub" decoding="async">
+          </picture>
+          <span class="case__open">Open full size<span class="arrow" aria-hidden="true"></span></span>
+        </a>
+        <figcaption>Creating an account with a choice of role, and the device screen for pairing the MediCompanion Hub.</figcaption>
+      </figure>
+
+      <figure class="case__board">
+        <div class="stage stage--phones">
+          <span class="phone"><span class="phone__body"><img src="files/work/mc-sign-in.png" alt="MediCompanion sign in screen: email and password fields, a keep me signed in option and a full-width Sign in button" width="780" height="1688" loading="lazy"></span></span>
+          <span class="phone"><span class="phone__body"><img src="files/work/mc-sign-up.png" alt="MediCompanion create account screen: name, email, a password strength meter with three ticked rules, and a choice of how Arabic should address you" width="780" height="1688" loading="lazy"></span></span>
+          <span class="phone"><span class="phone__body"><img src="files/work/mc-sign-in-arabic.png" alt="The same sign in screen in Egyptian Arabic, mirrored right to left" width="780" height="1688" loading="lazy"></span></span>
+        </div>
+        <figcaption>Sign in, create account, and sign in again in Egyptian Arabic with the whole layout mirrored right to left. Screens from the working prototype.</figcaption>
+      </figure>
+
+      <figure class="case__board">
+        <a class="case__shot" href="files/work/medicompanion-entry-auth-session.png" target="_blank" rel="noopener">
+          <img src="files/work/medicompanion-entry-auth-session.png" alt="Figma board of twelve MediCompanion screens covering cold start, sign in, account creation and consent, including suspended, locked, offline and region-blocked states, each with a written note beneath it" width="884" height="670" loading="lazy">
+          <span class="case__open">Open full board<span class="arrow" aria-hidden="true"></span></span>
+        </a>
+        <figcaption>The Figma board for entry, sign in and consent. Every state has its own frame and a written note for the developers.</figcaption>
+      </figure>
+    </div>
+
+    <aside class="case__side">
+      <dl class="case__facts">
+        <div><dt>Project</dt><dd>MediCompanion, family app</dd></div>
+        <div><dt>Role</dt><dd>Creative Lead and Head of Media, in charge of UI, UX and the front end</dd></div>
+        <div><dt>Status</dt><dd>Ongoing. Working towards the first working, medical-grade MVP.</dd></div>
+        <div><dt>Tools</dt><dd>Figma, then a clickable prototype in the browser</dd></div>
+        <div><dt>Languages</dt><dd>English, Egyptian Arabic and Modern Standard Arabic</dd></div>
+        <div><dt>Year</dt><dd>2026</dd></div>
+      </dl>
+      <p class="eyebrow">Design decisions</p>
+      <ol class="case__notes">
+        <li><b>Every state is designed</b>A suspended account, a locked sign in, no connection, a country not yet served: each one has its own screen and a clear next step, not a generic error.</li>
+        <li><b>Arabic first, not Arabic later</b>The layout mirrors fully for right to left. Arabic has no neutral form of address, so the app asks how to speak to you and only uses the answer for that.</li>
+        <li><b>Consent in plain words</b>What is required and what is optional is set out before anything is recorded, and the app asks again whenever the terms change.</li>
+        <li><b>Errors that say what happened</b>Password rules tick off as you type, and a failed sign in tells you how many attempts are left before it locks.</li>
+      </ol>
+    </aside>
+  </div>
+</section>
+
+<!-- ============================================================
+     CASE STUDY 02: GALALA SCHOLAR
+     ============================================================ -->
+<section class="section study" id="galala" aria-labelledby="guTitle">
+  <header class="section__head">
+    <div>
+      <p class="eyebrow">Case study 02</p>
+      <h2 class="h2" id="guTitle">Galala Scholar</h2>
+      <p class="section__sub">A research portal for Galala University: one place to find the university's publications, conference work and researcher profiles, and a workspace where its researchers keep their own record up to date.</p>
+    </div>
+  </header>
+
+  <div class="case">
+    <div class="case__boards">
+      <figure class="case__board">
+        <a class="case__shot" href="files/work/uiux/galala-desktop-2000.jpg" target="_blank" rel="noopener">
+          <picture>
+            <source type="image/webp" srcset="files/work/uiux/galala-desktop-1000.webp 1000w, files/work/uiux/galala-desktop-2000.webp 2000w" sizes="(max-width: 960px) 100vw, 884px">
+            <img src="files/work/uiux/galala-desktop-1000.jpg" srcset="files/work/uiux/galala-desktop-1000.jpg 1000w, files/work/uiux/galala-desktop-2000.jpg 2000w" sizes="(max-width: 960px) 100vw, 884px" width="2000" height="1091" alt="The Galala Scholar home page on a desktop monitor, surrounded by six more pages: search results, a research output, a faculty page, a researcher profile, filtered results and the researcher workspace" loading="lazy" decoding="async">
+          </picture>
+          <span class="case__open">Open full size<span class="arrow" aria-hidden="true"></span></span>
+        </a>
+        <figcaption>The home page with six of the pages behind it: search results, a research output, a faculty, a researcher profile and the researcher's own workspace.</figcaption>
+      </figure>
+
+      <figure class="case__board">
+        <a class="case__shot" href="files/work/uiux/galala-phones-2000.jpg" target="_blank" rel="noopener">
+          <picture>
+            <source type="image/webp" srcset="files/work/uiux/galala-phones-1000.webp 1000w, files/work/uiux/galala-phones-2000.webp 2000w" sizes="(max-width: 960px) 100vw, 884px">
+            <img src="files/work/uiux/galala-phones-1000.jpg" srcset="files/work/uiux/galala-phones-1000.jpg 1000w, files/work/uiux/galala-phones-2000.jpg 2000w" sizes="(max-width: 960px) 100vw, 884px" width="2000" height="1333" alt="Galala Scholar on phones: the home page with its search box in the centre, with search results, a researcher profile and the complete your profile checklist around it" loading="lazy" decoding="async">
+          </picture>
+          <span class="case__open">Open full size<span class="arrow" aria-hidden="true"></span></span>
+        </a>
+        <figcaption>The same pages on a phone: home, search results for "dental", a research output, and the checklist a researcher works through to complete a profile.</figcaption>
+      </figure>
+
+      <figure class="case__board">
+        <a class="case__shot" href="files/work/uiux/galala-laptop-2000.jpg" target="_blank" rel="noopener">
+          <picture>
+            <source type="image/webp" srcset="files/work/uiux/galala-laptop-1000.webp 1000w, files/work/uiux/galala-laptop-2000.webp 2000w" sizes="(max-width: 960px) 100vw, 884px">
+            <img src="files/work/uiux/galala-laptop-1000.jpg" srcset="files/work/uiux/galala-laptop-1000.jpg 1000w, files/work/uiux/galala-laptop-2000.jpg 2000w" sizes="(max-width: 960px) 100vw, 884px" width="2000" height="1400" alt="The Galala Scholar home page on a laptop: the heading Find research from Galala University, a search box with popular topics, and four figures for researchers, research outputs, faculties and research areas" loading="lazy" decoding="async">
+          </picture>
+          <span class="case__open">Open full size<span class="arrow" aria-hidden="true"></span></span>
+        </a>
+        <figcaption>The home page. A heading, one search box and four figures, before anything else.</figcaption>
+      </figure>
+    </div>
+
+    <aside class="case__side">
+      <dl class="case__facts">
+        <div><dt>Project</dt><dd>Galala University Scholar</dd></div>
+        <div><dt>Client</dt><dd>Galala University, freelance commission</dd></div>
+        <div><dt>Role</dt><dd>UI and UX design</dd></div>
+        <div><dt>Scope</dt><dd>Search, researcher profiles, research outputs, faculty pages and the researcher workspace</dd></div>
+        <div><dt>Screens</dt><dd>Desktop and phone, English and Arabic</dd></div>
+        <div><dt>Year</dt><dd>2026</dd></div>
+      </dl>
+      <p class="eyebrow">Design decisions</p>
+      <ol class="case__notes">
+        <li><b>Search comes first</b>The home page is a search box and four figures, not a welcome message. One field covers researchers, outputs and events, with popular topics underneath to start a first-time visitor off.</li>
+        <li><b>A profile built in small steps</b>A researcher completes a profile through a short checklist with a time estimate on each step, such as adding a photo or connecting ORCID, in place of one long form.</li>
+        <li><b>The same record on any screen</b>Result lists, filters and profile pages reflow from a wide monitor down to a phone without dropping a field.</li>
+        <li><b>The university's identity as a system</b>Colour, type and components follow the Galala University visual identity, so every page reads as one product.</li>
+      </ol>
+      <div class="case__links">
+        <a class="textlink" href="https://www.behance.net/gallery/256955103/Galala-Scholar-Computer-UI-UX" target="_blank" rel="noopener">Desktop project on Behance</a>
+        <a class="textlink" href="https://www.behance.net/gallery/256950429/Galala-University-Scholar-UI-UX" target="_blank" rel="noopener">Mobile project on Behance</a>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<!-- ============================================================
+     CASE STUDY 03: THIS PORTFOLIO (web design and development)
+     The two pictures are captures of the home page's own first screen
+     (1440 wide and 390 wide). If the hero changes, retake them (see
+     README, "Mockup images").
+     ============================================================ -->
+<section class="section study" id="website" aria-labelledby="webTitle">
+  <header class="section__head">
+    <div>
+      <p class="eyebrow">Case study 03</p>
+      <h2 class="h2" id="webTitle">This portfolio</h2>
+      <p class="section__sub">Web design and development. The example is the site you are reading. I designed it, then built it in plain HTML, CSS and JavaScript, with no template, framework or page builder underneath.</p>
+    </div>
+  </header>
+
+  <div class="case">
+    <div class="case__boards">
+      <figure class="case__board">
+        <div class="stage stage--web">
+          <div class="browser">
+            <div class="browser__bar" aria-hidden="true"><i></i><i></i><i></i><span class="browser__url">Gamal Sheridan, Multimedia Specialist</span></div>
+            <picture>
+              <source type="image/webp" srcset="files/work/site-desktop.webp">
+              <img src="files/work/site-desktop.jpg" alt="This website on a desktop screen: the pill navigation, the split headline reading Multimedia specialist and creative technologist, the introduction and three key facts" width="1800" height="1125" loading="lazy">
+            </picture>
+          </div>
+          <span class="phone"><span class="phone__body"><img src="files/work/site-mobile.jpg" alt="The same first screen on a phone, with the headline stacked and the navigation folded into a menu button" width="780" height="1688" loading="lazy"></span></span>
+        </div>
+        <figcaption>One page, two widths. The layout, type scale and navigation adapt from a 1440 pixel desktop down to a 390 pixel phone.</figcaption>
+      </figure>
+    </div>
+
+    <aside class="case__side">
+      <dl class="case__facts">
+        <div><dt>Project</dt><dd>This portfolio</dd></div>
+        <div><dt>Role</dt><dd>Design, front-end build and motion</dd></div>
+        <div><dt>Stack</dt><dd>HTML, CSS and JavaScript. No framework, no build step.</dd></div>
+        <div><dt>Year</dt><dd>2026</dd></div>
+      </dl>
+      <p class="eyebrow">How it is built</p>
+      <ol class="case__notes">
+        <li><b>Nothing underneath it</b>One HTML file, one stylesheet, one script. There is nothing to install, compile or keep updated, and it goes live by copying a folder.</li>
+        <li><b>Motion with a job to do</b>The logo opening, the rolling headline, the logo wall and the footer wordmark are written in CSS and the Web Animations API, and each one pauses when it is off screen.</li>
+        <li><b>Quick on a phone</b>Images ship in several sizes so each screen downloads only what it needs, anything below the fold loads late, and video waits until it is in view.</li>
+        <li><b>Usable by everyone</b>Real headings and landmarks, a visible focus ring on every control, a skip link, and native dialog and details elements, so the content still reads with JavaScript off.</li>
+      </ol>
+    </aside>
+  </div>
+</section>
+
+</main>
+
+<!-- ============================================================
+     CONTACT / FOOTER
+     ============================================================ -->
+<footer class="foot" id="contact">
+  <div class="foot__top">
+    <div class="foot__contact">
+      <p class="foot__hello">Have an interface that needs designing?</p>
+      <a class="foot__mail" href="mailto:gamal.1984.sheridan@gmail.com">gamal.1984.sheridan@gmail.com</a>
+      <div class="foot__actions">
+        <button class="btn btn-solid" id="copyMail" type="button">Copy address</button>
+        <span class="foot__note">Open to freelance multimedia work, 3D and animation collaborations, UI and web builds, and creative-technology roles across Egypt, the UK and the EU. Remote ready and timezone flexible.</span>
+      </div>
+    </div>
+
+    <div class="foot__cols">
+      <div>
+        <p class="foot__colhead">Gamal Sheridan</p>
+        <a href="index.html" data-curtain="Gamal Sheridan">Portfolio</a>
+        <a href="index.html#work" data-curtain="Gamal Sheridan">Work</a>
+        <a href="index.html#services" data-curtain="Gamal Sheridan">Services</a>
+        <a href="#website">This portfolio</a>
+        <a href="index.html#about" data-curtain="Gamal Sheridan">About</a>
+        <a href="#medicompanion">MediCompanion</a>
+        <a href="#galala">Galala Scholar</a>
+      </div>
+      <div class="foot__links">
+        <p class="foot__colhead">Connect on</p>
+        <a class="linkcard linkcard--compact" href="https://www.linkedin.com/in/gamal-sheridan" target="_blank" rel="noopener">
+          <span class="linkcard__thumb"><img src="files/thumbs/profile-linkedin.jpg" alt="" width="360" height="270" loading="lazy"></span>
+          <span class="linkcard__text"><span class="linkcard__title">LinkedIn</span><span class="linkcard__url">linkedin.com/in/gamal-sheridan</span></span>
+          <span class="arrow" aria-hidden="true"></span>
+        </a>
+        <a class="linkcard linkcard--compact" href="https://www.behance.net/gamalsheridan" target="_blank" rel="noopener">
+          <span class="linkcard__thumb"><img src="files/thumbs/profile-behance.jpg" alt="" width="360" height="270" loading="lazy"></span>
+          <span class="linkcard__text"><span class="linkcard__title">Behance</span><span class="linkcard__url">behance.net/gamalsheridan</span></span>
+          <span class="arrow" aria-hidden="true"></span>
+        </a>
+        <a class="linkcard linkcard--compact" href="https://www.linkedin.com/company/medicompanion-health" target="_blank" rel="noopener">
+          <span class="linkcard__thumb"><img src="files/thumbs/profile-medicompanion.jpg" alt="" width="360" height="270" loading="lazy"></span>
+          <span class="linkcard__text"><span class="linkcard__title">MediCompanion</span><span class="linkcard__url">LinkedIn company page</span></span>
+          <span class="arrow" aria-hidden="true"></span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="foot__base">
+    <span>© <span id="year">2026</span> Gamal Sheridan. Cairo, Egypt.</span>
+    <span>Designed and built in HTML, CSS and JavaScript. <a href="#website">How it is built</a></span>
+    <a href="#top">Back to top</a>
+  </div>
+
+  <div class="foot__crop" id="wordmarkCrop" aria-hidden="true" data-mp-ignore><p class="foot__wordmark" id="wordmark"><span>Sheridan</span></p></div>
+</footer>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="js/main.js" defer></script>
+</body>
+</html>

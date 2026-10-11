@@ -13,7 +13,8 @@
    06 Hero and stats
    07 Full-bleed figure and statement
    08 Selected work grid and archive folder
-   08b UI and UX design
+   08b Case studies (UI and UX design, web development)
+   08c Device mockups
    09 Services
    10 Logo wall (the animation)
    11 About (baseline)
@@ -23,6 +24,9 @@
    15 Footer
    16 Player dialog, toast
    17 Motion, reduced motion, print
+   18 Preloader, 19 Motion Polish hand-off
+   20 Page curtain
+   21 Case study page (ui-ux.html)
    ========================================================================== */
 
 
@@ -303,12 +307,17 @@ html:not(.js) .site-head > * { opacity: 1; transform: none; }
 .menu__cards { display: flex; flex-wrap: wrap; gap: 8px; }
 .menu__cards .linkcard { flex: 1 1 340px; width: auto; max-width: none; }
 
-/* Seven links plus the chip need more room than a small laptop has, so the
-   chip drops to its short label before the nav folds into the burger. */
-@media (max-width: 1080px) {
+/* Nine links plus the chip need more room than a small laptop has, so the
+   chip drops to its short label, then the links close up a little, before
+   the nav folds into the burger. */
+@media (max-width: 1140px) {
   .chip { white-space: nowrap; }
   .chip__full { display: none; }
   .chip__short { display: inline; }
+}
+@media (max-width: 1000px) {
+  .pill-nav { gap: 12px; }
+  .pill-nav__links a { padding: 6px 8px; }
 }
 @media (max-width: 900px) {
   .pill-nav__links { display: none; }
@@ -615,27 +624,27 @@ a.section__aside:hover { color: var(--ink); border-bottom-color: var(--ink); }
 }
 
 
-/* 08b UI AND UX DESIGN
-   The board sits on the left and never scales past its native 884px, so a
-   wide screen does not blur it. The facts and notes sit beside it and stay
-   in view while a taller stack of boards scrolls past.
+/* 08b CASE STUDIES (UI and UX design, web development)
+   The boards sit on the left and never scale past 884px, the native width of
+   the Figma board, so a wide screen does not blur it. The facts and notes sit
+   beside them and stay in view while a taller stack of boards scrolls past.
    ------------------------------------------------------------------------ */
-.uiux__grid {
+.case {
   display: grid;
   grid-template-columns: minmax(0, 884px) minmax(300px, 1fr);
   gap: 40px clamp(32px, 5vw, 80px);
   align-items: start;
 }
-.uiux__boards { display: grid; gap: clamp(32px, 4vw, 56px); }
-.uiux__board { margin: 0; }
+.case__boards { display: grid; gap: clamp(32px, 4vw, 56px); }
+.case__board { margin: 0; }
 
-.uiux__shot {
+.case__shot {
   position: relative; display: block; overflow: hidden;
   border: 1px solid var(--line); border-radius: var(--radius); background: var(--paper);
 }
-.uiux__shot img { width: 100%; height: auto; transition: transform .8s var(--ease-out); }
-.uiux__shot:hover img { transform: scale(1.012); }
-.uiux__open {
+.case__shot img { width: 100%; height: auto; transition: transform .8s var(--ease-out); }
+.case__shot:hover img { transform: scale(1.012); }
+.case__open {
   position: absolute; right: 12px; bottom: 12px;
   display: inline-flex; align-items: center; gap: 8px;
   height: 36px; padding: 0 14px;
@@ -644,35 +653,99 @@ a.section__aside:hover { color: var(--ink); border-bottom-color: var(--ink); }
   font-size: 13px; font-weight: 600;
   transition: background .2s var(--ease-out), color .2s var(--ease-out);
 }
-.uiux__shot:hover .uiux__open { background: var(--ink); color: var(--paper); }
-.uiux__board figcaption { margin-top: 12px; max-width: 70ch; font-size: 13px; color: var(--ink-2); }
+.case__shot:hover .case__open { background: var(--ink); color: var(--paper); }
+.case__board figcaption { margin-top: 12px; max-width: 70ch; font-size: 13px; color: var(--ink-2); }
 
-.uiux__side { position: sticky; top: calc(var(--head-h) + 24px); }
-.uiux__facts { margin: 0 0 32px; border-top: 1px solid var(--ink); }
-.uiux__facts > div {
+.case__side { position: sticky; top: calc(var(--head-h) + 24px); }
+.case__facts { margin: 0 0 32px; border-top: 1px solid var(--ink); }
+.case__facts > div {
   display: grid; grid-template-columns: 84px minmax(0, 1fr); gap: 12px;
   padding: 12px 0; border-bottom: 1px solid var(--line);
 }
-.uiux__facts dt { font-size: 13px; color: var(--ink-2); padding-top: 2px; }
-.uiux__facts dd { margin: 0; font-size: 15px; line-height: 1.45; }
-.uiux__side .eyebrow { margin-bottom: 10px; }
+.case__facts dt { font-size: 13px; color: var(--ink-2); padding-top: 2px; }
+.case__facts dd { margin: 0; font-size: 15px; line-height: 1.45; }
+.case__side .eyebrow { margin-bottom: 10px; }
 
-.uiux__notes { counter-reset: note; border-top: 1px solid var(--ink); }
-.uiux__notes li {
+.case__notes { counter-reset: note; border-top: 1px solid var(--ink); }
+.case__notes li {
   counter-increment: note; position: relative;
   padding: 14px 0 14px 34px; border-bottom: 1px solid var(--line);
   font-size: 14px; line-height: 1.5; color: #2A2A2A;
 }
-.uiux__notes li::before {
+.case__notes li::before {
   content: counter(note); position: absolute; left: 0; top: 14px;
   font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums; color: var(--ink-2);
 }
-.uiux__notes b { display: block; margin-bottom: 2px; font-size: 15px; font-weight: 600; letter-spacing: -.005em; color: var(--ink); }
+.case__notes b { display: block; margin-bottom: 2px; font-size: 15px; font-weight: 600; letter-spacing: -.005em; color: var(--ink); }
 
 @media (max-width: 960px) {
-  .uiux__grid { grid-template-columns: 1fr; }
-  .uiux__side { position: static; }
+  .case { grid-template-columns: 1fr; }
+  .case__side { position: static; }
 }
+
+
+/* 08c DEVICE MOCKUPS
+   Drawn in CSS, so they stay sharp at any size and weigh nothing. A .stage is
+   the grey plate the devices sit on. A .phone is sized by its own width: the
+   bezel and corner radii are in cqw (hundredths of that width), so the frame
+   keeps its proportions from 80px to 300px wide. The screen inside is a plain
+   <img> captured at 390 x 844.
+   ------------------------------------------------------------------------ */
+.stage {
+  position: relative; overflow: hidden;
+  border-radius: var(--radius); background: var(--surface);
+  padding: clamp(20px, 4.4vw, 56px);
+}
+
+.phone { display: block; container-type: inline-size; }
+.phone__body {
+  display: block; background: #0C0C0C;
+  padding: 8px; border-radius: 34px;                     /* fallback for browsers without container units */
+  padding: 3.4cqw; border-radius: 15.5cqw;
+  box-shadow: 0 30px 50px -30px rgba(0, 0, 0, .45);
+}
+.phone__body img {
+  display: block; width: 100%; height: auto;
+  aspect-ratio: 390 / 844; object-fit: cover; object-position: top;
+  border-radius: 26px; border-radius: 12.4cqw;
+  background: var(--paper);
+}
+
+/* three phones in a row, the middle one set lower */
+.stage--phones {
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(10px, 3vw, 40px); align-items: start;
+  padding-inline: clamp(16px, 7vw, 92px);
+}
+.stage--phones .phone:nth-child(2) { margin-top: clamp(14px, 4vw, 52px); }
+.stage--phones .phone:nth-child(odd) { margin-bottom: clamp(14px, 4vw, 52px); }
+
+/* a browser window with a phone standing in front of its lower right corner */
+.stage--web { padding-bottom: clamp(28px, 6vw, 76px); padding-right: clamp(28px, 7vw, 92px); }
+.browser {
+  overflow: hidden; background: var(--paper);
+  border: 1px solid var(--line); border-radius: 10px;
+  box-shadow: 0 30px 50px -34px rgba(0, 0, 0, .4);
+}
+.browser__bar {
+  display: flex; align-items: center; gap: 6px;
+  height: clamp(22px, 3.6vw, 34px); padding: 0 12px;
+  border-bottom: 1px solid var(--line);
+}
+.browser__bar i { flex: none; width: 8px; height: 8px; border-radius: 50%; background: #D9D9D6; }
+.browser__url {
+  margin: 0 auto; max-width: 62%; padding: 2px 14px;
+  border-radius: 999px; background: var(--surface);
+  font-size: 11px; line-height: 1.5; color: var(--ink-2);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  transform: translateX(-21px);                          /* optically centred: cancels the three dots */
+}
+.browser img { display: block; width: 100%; height: auto; }
+.stage--web .phone {
+  position: absolute; right: clamp(10px, 2.6vw, 34px); bottom: clamp(12px, 2.6vw, 32px);
+  width: clamp(78px, 20%, 176px);
+}
+@media (max-width: 520px) { .browser__url { display: none; } }
 
 
 /* 09 SERVICES
@@ -692,17 +765,25 @@ a.section__aside:hover { color: var(--ink); border-bottom-color: var(--ink); }
 }
 .services__list li.is-active { color: var(--ink); }
 .services__list li:not(.is-active):hover { color: var(--ink-2); }
-.services__list button {
+.services__list button, .services__list a {
   display: grid; grid-template-columns: 1.1em 1fr; align-items: baseline; gap: 6px;
   width: 100%; text-align: left;
   padding: 6px 0;
   font-size: clamp(26px, 3.1vw, 46px);
   font-weight: 500; letter-spacing: -.02em; line-height: 1.08;
 }
-.services__list button::before {
+.services__list button::before, .services__list a::before {
   content: counter(svc);
   font-size: .62em; font-weight: 600;
   font-variant-numeric: tabular-nums;
+}
+/* the row that is a link to another page says so, under its name */
+.services__go {
+  grid-column: 2; justify-self: start;
+  display: inline-flex; align-items: center; gap: 7px;
+  margin: 8px 0 4px; padding-bottom: 1px;
+  font-size: 13px; font-weight: 600; letter-spacing: 0; line-height: 1.3;
+  border-bottom: 1px solid currentColor;
 }
 
 .services__media {
@@ -731,7 +812,36 @@ a.section__aside:hover { color: var(--ink); border-bottom-color: var(--ink); }
   opacity: 0; visibility: hidden;
   transition: opacity .5s var(--ease-out), visibility 0s linear .5s;
 }
-.services__frame iframe.is-on { opacity: 1; visibility: visible; transition: opacity .5s var(--ease-out); }
+.services__frame iframe.is-on { visibility: visible; transition: opacity .5s var(--ease-out); }
+.services__frame iframe.is-on.is-loaded { opacity: 1; }
+
+/* Loading animation for a live embed: a small wireframe globe turning on its
+   axis (the meridian is a circle squeezed flat and opened again), shown while
+   the frame carries .is-loading. */
+.services__loader {
+  position: absolute; inset: 0; z-index: 2;
+  display: grid; place-content: center; justify-items: center; gap: 14px;
+  opacity: 0; visibility: hidden; pointer-events: none;
+  transition: opacity .35s var(--ease-out), visibility 0s linear .35s;
+}
+.services__frame.is-loading .services__loader { opacity: 1; visibility: visible; transition: opacity .35s var(--ease-out); }
+.services__loader i {
+  position: relative; display: block; width: 46px; height: 46px;
+  border: 1.5px solid var(--ink); border-radius: 50%;
+}
+.services__loader i::before, .services__loader i::after { content: ""; position: absolute; }
+.services__loader i::before {                      /* the turning meridian */
+  inset: -1.5px; border: 1.5px solid var(--ink); border-radius: 50%;
+}
+.services__loader i::after {                       /* the equator */
+  left: -1.5px; right: -1.5px; top: 50%; height: 1.5px; margin-top: -.75px; background: var(--ink);
+}
+.services__frame.is-loading .services__loader i::before { animation: globe-turn 1.6s cubic-bezier(.65, 0, .35, 1) infinite; }
+.services__loader b { font-size: 13px; font-weight: 500; color: var(--ink-2); }
+@keyframes globe-turn {
+  0%, 100% { transform: scaleX(1); }
+  50%      { transform: scaleX(.06); }
+}
 .services__frame.is-missing { background: repeating-linear-gradient(45deg, #F3F3F1 0 8px, #E9E9E6 8px 16px); }
 .services__frame.is-missing img { visibility: hidden; }
 .services__toolsbox { display: grid; min-width: 150px; }
@@ -999,6 +1109,7 @@ a.doc:hover .doc__title { text-decoration: underline; text-underline-offset: 3px
 }
 a.doc:hover .doc__thumb img { transform: scale(1.03); }
 
+.docs:not(.docs--4) { row-gap: clamp(40px, 5vw, 64px); }
 @media (max-width: 960px) { .docs, .docs--4 { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 560px) { .docs, .docs--4 { grid-template-columns: 1fr; } }
 
@@ -1239,7 +1350,7 @@ main { --tick-size: clamp(76px, 13vw, 224px); }
 .ticker__track {
   display: flex; width: max-content;
   font-size: var(--tick-size); line-height: .92;
-  animation: ticker var(--tick-dur, 38s) linear infinite;
+  animation: ticker var(--tick-dur, 56s) linear infinite;
 }
 .ticker__group { display: flex; flex: none; }
 .ticker__group li { flex: none; display: flex; align-items: center; white-space: nowrap; }
@@ -1295,3 +1406,92 @@ main { --tick-size: clamp(76px, 13vw, 224px); }
    it is switched off until main.js starts Motion Polish under the cover.
    ------------------------------------------------------------------------ */
 html.has-pre.mp-ready:not(.mp-loaded) body { opacity: 1 !important; animation: none !important; }
+
+
+/* 20 PAGE CURTAIN
+   The black panel that carries the visitor between index.html and
+   ui-ux.html. At rest it waits below the screen, hidden. Leaving (.is-in) it
+   rises and its label rolls up into view. On the page being opened it starts
+   down (html.from-curtain, set before first paint) and .is-out lifts it away.
+   main.js module 09b drives the classes.
+   ------------------------------------------------------------------------ */
+.curtain {
+  position: fixed; inset: 0; z-index: 2000;
+  display: grid; place-items: center;
+  background: var(--ink); color: var(--paper);
+  transform: translate3d(0, 101%, 0); visibility: hidden;
+}
+.curtain__label {
+  overflow: hidden; padding: 0 var(--gutter) .06em; text-align: center;
+  font-size: clamp(40px, 9vw, 150px);
+}
+.curtain__label span { display: block; transform: translateY(110%); }
+
+.curtain.is-in {
+  visibility: visible; transform: none;
+  transition: transform .7s cubic-bezier(.65, 0, .2, 1);
+}
+.curtain.is-in .curtain__label span { transform: none; transition: transform .6s var(--ease-out) .22s; }
+
+html.from-curtain .curtain { visibility: visible; transform: none; }
+html.from-curtain .curtain__label span { transform: none; }
+html.from-curtain .curtain.is-out {
+  transform: translate3d(0, -101%, 0);
+  transition: transform .85s cubic-bezier(.65, 0, .2, 1);
+}
+html.from-curtain .curtain.is-out .curtain__label span { transform: translateY(-110%); transition: transform .5s var(--ease-in); }
+
+/* Motion Polish holds the page hidden until it has staged it, which would
+   hide the panel too. On arrival the panel is the cover, so let the page show. */
+html.from-curtain.mp-ready:not(.mp-loaded) body { opacity: 1 !important; animation: none !important; }
+@media print { .curtain { display: none !important; } }
+
+
+/* 21 CASE STUDY PAGE (ui-ux.html)
+   A big two-line title, an introduction beside an index of the projects,
+   then one .section per project using the .case layout from 08b.
+   ------------------------------------------------------------------------ */
+.subhero { padding: calc(var(--head-h) + clamp(28px, 5vw, 72px)) var(--gutter) clamp(48px, 7vw, 104px); }
+.subhero__back {
+  display: inline-flex; align-items: center; gap: 8px;
+  margin-bottom: clamp(24px, 4vw, 52px); padding-bottom: 1px;
+  font-size: 13px; font-weight: 600; border-bottom: 1px solid currentColor;
+}
+.subhero__back .arrow { transform: rotate(-135deg); }             /* the outbound arrow, turned to point back */
+.subhero__back:hover { color: var(--ink-2); }
+.subhero__title { font-size: clamp(64px, 16.5vw, 300px); line-height: .84; }
+.subhero__title .hero__line:nth-child(1) > span { transition-delay: .05s; }
+.subhero__title .hero__line:nth-child(2) > span { transition-delay: .15s; }
+.subhero__intro {
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 32px clamp(32px, 6vw, 96px); align-items: start;
+  margin-top: clamp(36px, 6vw, 88px); max-width: none; padding-bottom: 0;
+}
+.subhero__index { border-top: 1px solid var(--ink); }
+.subhero__index a {
+  display: grid; grid-template-columns: 2.2em minmax(0, 1fr) auto; align-items: baseline; gap: 4px 16px;
+  padding: 16px 0; border-bottom: 1px solid var(--line);
+  transition: background .2s var(--ease-out);
+}
+.subhero__index a:hover { background: var(--surface); }
+.subhero__index .n { font-size: 13px; font-weight: 600; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.subhero__index .t { font-size: clamp(20px, 2vw, 28px); font-weight: 600; letter-spacing: -.015em; line-height: 1.15; }
+.subhero__index .k { grid-column: 2; font-size: 13px; color: var(--ink-2); }
+.subhero__index .d {
+  grid-column: 3; grid-row: 1; display: inline-flex; align-items: center; gap: 7px;
+  font-size: 13px; font-weight: 600; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px;
+}
+.subhero__index .d .arrow { transform: rotate(135deg); }          /* points down the page */
+
+.study .eyebrow { margin-bottom: 10px; }
+/* a tall picture (a portrait mockup) is cropped to 4:5 on the page; the link still opens all of it */
+.case__shot--tall img { aspect-ratio: 4 / 5; object-fit: cover; }
+.case__shot picture { display: block; }
+.case__links { display: flex; flex-wrap: wrap; gap: 10px 24px; margin-top: 20px; }
+
+.study-next { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 20px; }
+.study-next p { font-size: clamp(20px, 2.4vw, 30px); font-weight: 500; letter-spacing: -.01em; color: var(--ink-3); }
+
+@media (max-width: 860px) {
+  .subhero__intro { grid-template-columns: 1fr; }
+}
